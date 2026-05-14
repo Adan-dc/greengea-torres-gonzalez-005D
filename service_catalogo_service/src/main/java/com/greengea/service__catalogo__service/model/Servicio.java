@@ -1,4 +1,4 @@
-package com.greengea.service_catalogo_servicios.model;
+package com.greengea.service__catalogo__service.model;
 
 import java.time.LocalDate;
 import jakarta.persistence.Entity;
@@ -20,7 +20,7 @@ public class Servicio
     private Long id;
     private String codigo;
     private String tipo;
-    private Double precio_desde;
+    private int precio_desde;
     private LocalDate tiempo_estimado_entrega;
     private String descripcion;
 }

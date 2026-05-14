@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.greengea</groupId>
-	<artifactId>service_catalogo_servicios</artifactId>
+	<artifactId>service__catalogo__service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>service_catalogo_servicios</name>
+	<name>service__catalogo__service</name>
 	<description/>
 	<url/>
 	<licenses>

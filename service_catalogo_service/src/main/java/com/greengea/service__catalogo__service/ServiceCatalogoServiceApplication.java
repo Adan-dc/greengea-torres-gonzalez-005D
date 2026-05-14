@@ -1,13 +1,13 @@
-package com.greengea.service_catalogo_servicios;
+package com.greengea.service__catalogo__service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ServiceCatalogoServiciosApplication {
+public class ServiceCatalogoServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ServiceCatalogoServiciosApplication.class, args);
+		SpringApplication.run(ServiceCatalogoServiceApplication.class, args);
 	}
 
 }
