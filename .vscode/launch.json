@@ -1,0 +1,68 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceCatalogoProductoApplication<service_catalogo_producto>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.greengea.service__catalogo__producto.ServiceCatalogoProductoApplication",
+            "projectName": "service_catalogo_producto",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=50828 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=service_catalogo_producto"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceInventarioApplication<service-inventario>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.greengea.service_inventario.ServiceInventarioApplication",
+            "projectName": "service-inventario",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=55445 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=service-inventario"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CarritodecomprasApplication<carritodecompras>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.greengea.carritodecompras.CarritodecomprasApplication",
+            "projectName": "carritodecompras",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=51942 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=carritodecompras"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceClientesApplication<service-clientes>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.greengea.service_clientes.ServiceClientesApplication",
+            "projectName": "service-clientes",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceCatalogoProductoApplication<service__catalogo__producto>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.greengea.service__catalogo__producto.ServiceCatalogoProductoApplication",
+            "projectName": "service__catalogo__producto",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=50755 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=service__catalogo__producto"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceCatalogoServiceApplication<service__catalogo__service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.greengea.service__catalogo__service.ServiceCatalogoServiceApplication",
+            "projectName": "service__catalogo__service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
