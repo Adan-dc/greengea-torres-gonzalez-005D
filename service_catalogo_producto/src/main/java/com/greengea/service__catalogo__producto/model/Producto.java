@@ -1,4 +1,6 @@
-package com.greengea.service_catalogo_producto.model;
+package com.greengea.service__catalogo__producto.model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,6 +30,7 @@ public class Producto
     private float peso_gramos;
     private float dimensiones;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "categoria_id")
+    @JoinColumn(name = "categoria_id", unique = true)
+    @JsonBackReference
     private Categoria categoria;
 }

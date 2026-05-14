@@ -1,4 +1,4 @@
-package com.greengea.service_catalogo_producto;
+package com.greengea.service__catalogo__producto;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
