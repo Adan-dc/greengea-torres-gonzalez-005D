@@ -1,6 +1,8 @@
 package com.greengea.service_inventario.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,78 +22,117 @@ public class InventarioService {
     @Autowired
     private MovimientosRepository movimientosRepository;
 
-
+    //Movimientos
     public Movimientos guardarMovimientos(Movimientos movimientos) {
-    // 1. Validamos que el paciente existe ANTES de guardar
-    // Esto evita crear atenciones para pacientes que no existen
-    if (movimientos.getProductoId() != null) {
+    //if (stock.getMovimientos() != null) {
+            //for (Movimientos movimientos : stock.getMovimientos()) {
+                //movimientos.setStock(stock);
+            //}
+        //}
+        return movimientosRepository.save(movimientos);
+    }
+    
+    public List<Movimientos> listarTodas() {
+        return movimientosRepository.findAll();
+    }
+    public Optional<Movimientos> buscarMovimientoPorId(Long id){
+        return movimientosRepository.findById(id);
+    }
+
+    public Movimientos actualizarMovimientos(Long id, Movimientos movimientosNuevo) {
+        
+        Optional<Movimientos> movimientos = movimientosRepository.findById(id);
+
+        if (movimientos.isPresent()) {
+            Movimientos movimientosGuardado = movimientos.get();
+
+            movimientosGuardado.setTipo(movimientosNuevo.isTipo());;
+            movimientosGuardado.setCantidad(movimientosNuevo.getCantidad());
+            movimientosGuardado.setMotivo(movimientosNuevo.getMotivo());
+            movimientosGuardado.setFecha(movimientosNuevo.getFecha());
+
+
+            return movimientosRepository.save(movimientosGuardado);
+        }
+        
+        return null; 
+    }
+
+    public void eliminarMovimientos(Long id) {
+        movimientosRepository.deleteById(id);
+    }
+
+    //Stock
+
+    public Stock guardarStock(Stock stock) {
+    if (stock.getProductoId() != null) {
         try {
             Object datosProducto = webClientBuilder.build()
                 .get()
-                .uri("http://localhost:8082/api/v1/producto/" + movimientos.getProductoId())
+                .uri("http://localhost:8082/api/v1/producto/" + stock.getProductoId())
                 .retrieve()
                 .bodyToMono(Object.class)
-                .block(); // Bloqueamos para asegurar la validación antes del save
-            movimientos.setDatosProducto(datosProducto);
+                .block(); 
+            stock.setDatosProducto(datosProducto);
         } catch (Exception e) {
-        // ¡MAGIA! Si el puerto 8082 está apagado, cae aquí. 
-        // Ponemos un texto de aviso, pero NO detenemos el programa.
-        movimientos.setDatosProducto("Microservicio de Catálogo offline. No se pudo cargar la info.");
+        stock.setDatosProducto("Microservicio de Catálogo offline. No se pudo cargar la info.");
         }
     }
-    //if (movimientos.getStock() != null && movimientos.getStock().getId() != null) {
-        //Stock stock = stockRepository.findById(movimientos.getStock().getId())
-            //.orElseThrow(() -> new RuntimeException("Movimiento no encontrado"));
-        //movimientos.setStock(stock);
-    //}
-
-    // 3. Guardamos TODO el objeto ya validado y enriquecido
-    // Al devolver 'atencion' después del save, JPA ya le asignó su ID
-    return movimientosRepository.save(movimientos);
+        return stockRepository.save(stock);
+    }
+    
+    public List<Stock> listarStock() {
+        List<Stock> listaStock = stockRepository.findAll();
+        for (Stock stock : listaStock) {
+            enriquecerConProductos(stock); 
+        }
+        return listaStock;
     }
 
-    public Movimientos obtenerMovimientos(Long id) {
-        Movimientos movimientos = movimientosRepository.findById(id).orElse(null);
-        if (movimientos != null) {
-            return enriquecerConProductos(movimientos);
+    public Stock obtenerStock(Long id) {
+        Stock stock = stockRepository.findById(id).orElse(null);
+        if (stock != null) {
+            return enriquecerConProductos(stock);
         }
         return null;
     }
 
-    public List<Movimientos> listarTodas() {
-        return movimientosRepository.findAll();
-    }
+    public Stock actualizarStock(Long id, Stock stockNuevo) {
+        Optional<Stock> stock = stockRepository.findById(id);
 
-    public Stock guardarStock(Stock stock) {
-    // Si envías solo el ID de la especialidad, JPA se encarga, 
-    // pero es buena práctica validar o recuperar el objeto completo si quieres que la respuesta sea rica.
-    return stockRepository.save(stock);
-    }  
+        if (stock.isPresent()) {
+            Stock stockGuardado = stock.get();
+            stockGuardado.setCantidad(stockNuevo.getCantidad());
+            stockGuardado.setProductoId(stockNuevo.getProductoId());
+            stockGuardado.setMinimoParaReposicion(stockNuevo.getMinimoParaReposicion());
+            return stockRepository.save(stockGuardado);
+        }
+        return null; 
+    }
     
-    public List<Stock> listarStock() {
-    return stockRepository.findAll();
+    public void eliminarStock(Long id) {
+        stockRepository.deleteById(id);
     }
-
-    private Movimientos enriquecerConProductos(Movimientos movimientos) {
-        if (movimientos.getProductoId() != null) {
+    private Stock enriquecerConProductos(Stock stock) {
+        if (stock.getProductoId() != null) {
             try {
-                // Llamada al Microservicio de Pacientes (Puerto 8082)
                 Object producto = webClientBuilder.build()
                     .get()
-                    .uri("http://localhost:8082/api/v1/producto/" + movimientos.getProductoId()) //Es el destinatario de tu mensaje
-                    .retrieve() /*es el método que le dice a Spring: "Ya configuré la petición 
-                    (URL, headers, etc.), ahora envíala y tráeme la respuesta" */
-                    .bodyToMono(Object.class) /*Este método es el encargado de traducir el mensaje. Imagina que el microservicio
-                    de Pacientes te responde en "idioma" JSON (texto plano), pero tu código Java necesita "objetos" para poder 
-                     trabajar */
-                    .block(); // Espera la respuesta
+                    .uri("http://localhost:8082/api/v1/producto/" + stock.getProductoId())
+                    .retrieve() 
+                    .bodyToMono(Object.class) 
+                    .block(); 
                 
-                movimientos.setDatosProducto(producto);//setDatosPaciente(paciente)
+                stock.setDatosProducto(producto);
+                if (stock.getMovimientos() != null) {
+                for (Movimientos mov : stock.getMovimientos()) {
+                    mov.setDatosProducto(producto);
+                    }
+                }
             } catch (Exception e) {
-                // Si el micro de pacientes está caído, informamos en el campo pero no rompemos el flujo
-                movimientos.setDatosProducto("Información de paciente no disponible actualmente");
+                stock.setDatosProducto("Información del producto no disponible actualmente");
             }
         }
-        return movimientos;
+        return stock;
     }
 }
