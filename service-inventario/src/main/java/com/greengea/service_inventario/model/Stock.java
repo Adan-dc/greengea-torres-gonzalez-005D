@@ -8,31 +8,29 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//clase stock(Tecnicamente la principal)
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Stock {
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Long id;
-private int cantidad;
-private int minimoParaReposicion;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private int cantidad;
+    @Min(value = 1, message = "Debe tener un minimo para reposicion")
+    private int minimoParaReposicion;
 
-private Long productoId;
+    private Long productoId;
 
-@Transient
-private Object datosProducto; 
+    @Transient
+    private Object datosProducto; 
 
-@Transient
-private Integer precioProducto;
-
-@OneToMany(mappedBy = "stock")
-@JsonIgnore
-private List<Movimientos> movimientos;
+    @OneToMany(mappedBy = "stock")
+    @JsonIgnore
+    private List<Movimientos> movimientos;
 }

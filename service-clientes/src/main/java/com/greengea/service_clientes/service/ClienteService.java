@@ -43,11 +43,10 @@ public class ClienteService {
             clienteGuardado.setNombre(clienteNuevo.getNombre());
             clienteGuardado.setApellido(clienteNuevo.getApellido());
             clienteGuardado.setEmail(clienteNuevo.getEmail());
-            clienteGuardado.setRol(clienteNuevo.getRol());
             clienteGuardado.setFechaCreado(clienteNuevo.getFechaCreado());
-            if (clienteNuevo.getDireccionCliente() != null) {
-                clienteGuardado.setDireccionCliente(clienteNuevo.getDireccionCliente());
-            }
+            //if (clienteNuevo.getDireccionCliente() != null) {
+                //clienteGuardado.setDireccionCliente(clienteNuevo.getDireccionCliente());
+            //}
             return clienteRepository.save(clienteGuardado);
         }
         
@@ -67,11 +66,9 @@ public class ClienteService {
             Cliente cliente = clienteRepository.findById(direccion.getCliente().getId()).orElse(null);
             
             if (cliente != null) {
-                // 2. Le chantamos el cliente oficial a la dirección
+
                 direccion.setCliente(cliente);
 
-                // 3. ¡GUARDAMOS SOLO LA DIRECCIÓN Y LISTO!
-                // Eliminamos las líneas donde seteabas y guardabas al cliente.
                 return direccionClienteRepository.save(direccion);
             }
         }

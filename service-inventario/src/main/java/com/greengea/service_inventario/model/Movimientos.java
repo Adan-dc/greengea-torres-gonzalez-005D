@@ -9,6 +9,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,18 +23,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Movimientos {
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Long id;
-private boolean tipo;//entrada o salida
-private int cantidad;
-private String motivo;
-private LocalDate fecha;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @NotNull(message = "El tipo no puede estar vacío, manda true o false")
+    private boolean tipo;//Compra o venta
+    @Min(value = 1, message = "La cantidad del movimiento debe ser mínimo 1")
+    private int cantidad;
+    @NotBlank(message = "El motivo es obligatorio")
+    private String motivo;
+    private LocalDate fecha;
 
-@Transient
-private Object datosProducto; 
-
-@ManyToOne
-@JoinColumn(name = "stock_id")
-private Stock stock;
+    @Transient
+    @JsonIgnore
+    private Object datosProducto; 
+    @ManyToOne
+    @JoinColumn(name = "stock_id")
+    private Stock stock;
 }

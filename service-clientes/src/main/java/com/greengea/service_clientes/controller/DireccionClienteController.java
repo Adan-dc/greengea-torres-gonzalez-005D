@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,8 @@ import com.greengea.service_clientes.model.DireccionCliente;
 import com.greengea.service_clientes.repository.DireccionClienteRepository;
 import com.greengea.service_clientes.service.ClienteService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/direcciones")
 public class DireccionClienteController {
@@ -23,9 +26,17 @@ public class DireccionClienteController {
     private DireccionClienteRepository direccionClienteRepository;
     @Autowired
     private ClienteService clienteService;
+
     @PostMapping
-    public DireccionCliente guardarDireccion(@RequestBody DireccionCliente direccion) {
-        return clienteService.guardarDireccion(direccion);
+    public ResponseEntity<?> crearDireccion(@Valid @RequestBody DireccionCliente direccionCliente, BindingResult result) {
+    
+        if (result.hasErrors()) {
+            String mensajeDelModelo = result.getFieldError().getDefaultMessage();
+            
+            return ResponseEntity.badRequest().body(mensajeDelModelo);
+        }
+        clienteService.guardarDireccion(direccionCliente);
+        return ResponseEntity.ok("Guardado con éxito");
     }
 
     @GetMapping

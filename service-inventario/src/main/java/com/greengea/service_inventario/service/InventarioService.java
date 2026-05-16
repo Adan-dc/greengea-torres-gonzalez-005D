@@ -1,7 +1,6 @@
 package com.greengea.service_inventario.service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +22,24 @@ public class InventarioService {
     private MovimientosRepository movimientosRepository;
 
     //Movimientos
-    public Movimientos guardarMovimientos(Movimientos movimientos) {
-    //if (stock.getMovimientos() != null) {
-            //for (Movimientos movimientos : stock.getMovimientos()) {
-                //movimientos.setStock(stock);
-            //}
-        //}
-        return movimientosRepository.save(movimientos);
+    public Movimientos guardarMovimientos(Movimientos movimientos){
+        Optional<Stock> stockExistente = stockRepository.findById(movimientos.getStock().getId());
+        if(stockExistente.isPresent()){
+            Stock stock = stockExistente.get();
+            if(movimientos.isTipo()){
+                stock.setCantidad(stock.getCantidad() + movimientos.getCantidad());
+                movimientosRepository.save(movimientos);
+            }
+            else if(movimientos.isTipo() == false && stock.getCantidad() >= movimientos.getCantidad()){
+                stock.setCantidad(stock.getCantidad() - movimientos.getCantidad());
+                movimientosRepository.save(movimientos);
+            }
+            else{
+                throw new RuntimeException("No se puede sobrepasar la cantidad del movimiento a la del stock");
+            }
+            stockRepository.save(stock);
+        }
+        return null;
     }
     
     public List<Movimientos> listarTodas() {
@@ -42,12 +52,24 @@ public class InventarioService {
     public Movimientos actualizarMovimientos(Long id, Movimientos movimientosNuevo) {
         
         Optional<Movimientos> movimientos = movimientosRepository.findById(id);
-
         if (movimientos.isPresent()) {
             Movimientos movimientosGuardado = movimientos.get();
+            Stock stock = movimientosGuardado.getStock();
 
-            movimientosGuardado.setTipo(movimientosNuevo.isTipo());;
-            movimientosGuardado.setCantidad(movimientosNuevo.getCantidad());
+                if(movimientosNuevo.isTipo()){
+                    stock.setCantidad(stock.getCantidad() + movimientosNuevo.getCantidad());
+                    movimientosGuardado.setCantidad(movimientosNuevo.getCantidad());
+                }
+                else if(movimientosNuevo.isTipo() == false && stock.getCantidad() >= movimientosNuevo.getCantidad()){
+                    stock.setCantidad(stock.getCantidad() - movimientosNuevo.getCantidad());
+                    movimientosGuardado.setCantidad(movimientosNuevo.getCantidad());
+                }
+                else{
+                    throw new RuntimeException("No se puede sobrepasar la cantidad del movimiento a la del stock");
+                }
+            stockRepository.save(stock);
+
+            movimientosGuardado.setTipo(movimientosNuevo.isTipo());
             movimientosGuardado.setMotivo(movimientosNuevo.getMotivo());
             movimientosGuardado.setFecha(movimientosNuevo.getFecha());
 
@@ -103,7 +125,6 @@ public class InventarioService {
         if (stock.isPresent()) {
             Stock stockGuardado = stock.get();
             stockGuardado.setCantidad(stockNuevo.getCantidad());
-            stockGuardado.setProductoId(stockNuevo.getProductoId());
             stockGuardado.setMinimoParaReposicion(stockNuevo.getMinimoParaReposicion());
             return stockRepository.save(stockGuardado);
         }
@@ -130,9 +151,14 @@ public class InventarioService {
                     }
                 }
             } catch (Exception e) {
+                System.out.println("ERROR AL LLAMAR AL PRODUCTO: " + e.getMessage());
                 stock.setDatosProducto("Información del producto no disponible actualmente");
             }
         }
         return stock;
     }
+    public List<Object[]> contarMovimientosDeStock(Long stockId) {
+        return movimientosRepository.contarMovimientosPorStock(stockId);
+    }
+
 }

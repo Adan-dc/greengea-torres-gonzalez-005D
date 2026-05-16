@@ -7,5 +7,7 @@ import com.greengea.service_clientes.model.Cliente;
 
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
-    Cliente findByRut(String rut);
+
+
+    
 }
