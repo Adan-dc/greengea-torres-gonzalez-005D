@@ -3,7 +3,9 @@ package com.greengea.service__catalogo__producto.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,9 +14,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.greengea.service__catalogo__producto.model.Categoria;
 import com.greengea.service__catalogo__producto.service.CategoriaService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/categoria")
@@ -23,31 +26,55 @@ public class CategoriaController
     @Autowired
     private CategoriaService categoriaService;
 
+    @GetMapping("/conteo")
+    public List<Object[]> conteoCategorias() {
+
+        return categoriaService.obtenerConteoCategorias();
+    }
+
     @GetMapping
     public List<Categoria> listar(){
         return categoriaService.listarTodos();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Categoria> obtenerPorId(@PathVariable Long id) 
+    {
+        Categoria categoria = categoriaService.buscarPorId(id);
+        if (categoria == null) 
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(categoria, HttpStatus.OK);
+    }
+
     @PostMapping
-    public Categoria crear(@RequestBody Categoria categoria){
-        return categoriaService.guardar(categoria);
+    public ResponseEntity<?> crearCategoriaMensaje(@Valid @RequestBody Categoria categoria, BindingResult result) {
+
+    if (result.hasErrors()) {
+
+        String mensajeDelModelo = result.getFieldError().getDefaultMessage();
+
+        return ResponseEntity.badRequest().body(mensajeDelModelo);
+    }
+    categoriaService.guardar(categoria);
+    return ResponseEntity.ok("Guardado");
     }
 
     @PutMapping("/{id}") 
-    public ResponseEntity<Categoria> actualizarCategoria(
+    public ResponseEntity<?> actualizarCategoria(
             @PathVariable Long id, 
-            @RequestBody Categoria categoriaNueva) {
+            @Valid@RequestBody Categoria categoriaNueva, BindingResult result) {
 
-        // Llamamos al servicio pasándole el ID de la URL y el JSON del Postman
-        Categoria categoriaActualizada = categoriaService.actualizar(id, categoriaNueva);
+        if (result.hasErrors()) {
+                String mensajeDelModelo = result.getFieldError().getDefaultMessage();
+                return ResponseEntity.badRequest().body(mensajeDelModelo);
+            }
 
-        if (categoriaActualizada != null) {
-            // Si funcionó, devolvemos un 200 OK con los datos nuevecitos
-            return ResponseEntity.ok(categoriaActualizada);
-        } else {
-            // Si el ID no existía en la BD, devolvemos un 404 Not Found
-            return ResponseEntity.notFound().build();
-        }
+            try{
+                Categoria categoriaActualizado = categoriaService.actualizar(id, categoriaNueva);
+                    return ResponseEntity.ok(categoriaActualizado);
+                }catch (RuntimeException e){
+                    return ResponseEntity.badRequest().body(e.getMessage());
+                }
     }
 
     @DeleteMapping("/{id}")

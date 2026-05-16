@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,12 +27,10 @@ public class Categoria
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "El nombre es obligatorio")
     private String nombre; //Ej: Encuaderncion, Papeleria, Manualidades
-
-    //Al usar uno a muchos es necesario usar el List para obtener todos los productos de una categoria
     @OneToMany(mappedBy = "categoria", fetch = FetchType.EAGER)
     @JsonManagedReference
-    //Como una categoria puede tener muchos productos 
     private List<Producto> productos = new ArrayList<>(); 
     
 }

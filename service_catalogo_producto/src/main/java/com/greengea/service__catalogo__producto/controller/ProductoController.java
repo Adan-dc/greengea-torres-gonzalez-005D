@@ -3,7 +3,9 @@ package com.greengea.service__catalogo__producto.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.greengea.service__catalogo__producto.model.Producto;
 import com.greengea.service__catalogo__producto.repository.ProductoRepository;
 import com.greengea.service__catalogo__producto.service.CategoriaService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/producto")
@@ -31,32 +35,50 @@ public class ProductoController
         return productoRepository.findAll();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Producto> obtenerPorId(@PathVariable Long id) 
+    {
+        Producto producto = categoriaService.buscarPorIdProducto(id);
+        if (producto == null) 
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(producto, HttpStatus.OK);
+    }
+
     @PostMapping
-    public Producto crear(@RequestBody Producto producto){
-        return productoRepository.save(producto);
+    public ResponseEntity<?> crearProductoMensaje(@Valid @RequestBody Producto producto, BindingResult result) {
+
+    if (result.hasErrors()) {
+
+        String mensajeDelModelo = result.getFieldError().getDefaultMessage();
+
+        return ResponseEntity.badRequest().body(mensajeDelModelo);
+    }
+    productoRepository.save(producto);
+    return ResponseEntity.ok("Guardado");
     }
 
     @PutMapping("/{id}") 
-    public ResponseEntity<Producto> actualizarProducto(
+    public ResponseEntity<?> actualizarProducto(
             @PathVariable Long id, 
-            @RequestBody Producto productoNuevo) {
+            @Valid@RequestBody Producto productoNuevo, BindingResult result) {
 
-        // Llamamos al servicio pasándole el ID de la URL y el JSON del Postman
-        Producto productoActualizado = categoriaService.actualizarProducto(id, productoNuevo);
+            if (result.hasErrors()) {
+                String mensajeDelModelo = result.getFieldError().getDefaultMessage();
+                return ResponseEntity.badRequest().body(mensajeDelModelo);
+            }
 
-        if (productoActualizado != null) {
-            // Si funcionó, devolvemos un 200 OK con los datos nuevecitos
-            return ResponseEntity.ok(productoActualizado);
-        } else {
-            // Si el ID no existía en la BD, devolvemos un 404 Not Found
-            return ResponseEntity.notFound().build();
-        }
+            try{
+                Producto productoActualizado = categoriaService.actualizarProducto(id, productoNuevo);
+                    return ResponseEntity.ok(productoActualizado);
+                }catch (RuntimeException e){
+                    return ResponseEntity.badRequest().body(e.getMessage());
+                }
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarProducto(@PathVariable Long id){
         categoriaService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
     }
+
 }

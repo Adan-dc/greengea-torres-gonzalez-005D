@@ -21,8 +21,8 @@ public class ServicioService
         return servicioRepository.findAll();
     } 
 
-    public Optional<Servicio> buscarPorId(Long id) {
-        return servicioRepository.findById(id);
+    public Servicio buscarPorId(Long id){
+        return servicioRepository.findById(id).orElse(null);
     }
 
     @Transactional

@@ -6,6 +6,4 @@ import com.greengea.service__catalogo__service.model.Servicio;
 
 @Repository
 public interface ServicioRepository extends JpaRepository<Servicio, Long> {
-     // Buscar por tipo se servicio 
-    Servicio findByTipo(String tipo);;
 }

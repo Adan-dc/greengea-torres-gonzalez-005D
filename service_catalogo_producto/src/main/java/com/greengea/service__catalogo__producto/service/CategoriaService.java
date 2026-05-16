@@ -20,10 +20,13 @@ public class CategoriaService
     public List<Categoria> listarTodos(){
         return categoriaRepository.findAll();
     }
-
+    //buscarPorId producto
+    public Producto buscarPorIdProducto(Long id) {
+        return productoRepository.findById(id).orElse(null);
+    }
+    //buscarPorId Categoria
     public Categoria buscarPorId(Long id){
-        return categoriaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+        return categoriaRepository.findById(id).orElse(null);
     }
 
     public Categoria guardar(Categoria categoria) {
@@ -37,21 +40,19 @@ public class CategoriaService
 
     public Categoria actualizar(Long id, Categoria categoriaNueva) {
 
-        // 1. Buscamos el stock en MySQL usando el ID de la URL
         Optional<Categoria> categoria = categoriaRepository.findById(id);
 
         if (categoria.isPresent()) {
-            // 2. Lo sacamos del Optional
+            
             Categoria categoriaGuardada = categoria.get();
 
-            // 3. Le actualizamos los campos (¡NUNCA se actualiza el ID!)
+            
             categoriaGuardada.setNombre(categoriaNueva.getNombre());
 
-            // 4. Guardamos. Como el objeto ya tiene su ID original, Spring hace un UPDATE automático
+            
             return categoriaRepository.save(categoriaGuardada);
         }
 
-        // Si mandan un ID que no existe, devolvemos null
         return null; 
     }
 
@@ -62,29 +63,32 @@ public class CategoriaService
     //funciones del producto
     public Producto actualizarProducto(Long id, Producto productoNuevo) {
 
-        // 1. Buscamos el stock en MySQL usando el ID de la URL
         Optional<Producto> producto = productoRepository.findById(id);
 
         if (producto.isPresent()) {
-            // 2. Lo sacamos del Optional
+        
             Producto productoGuardado = producto.get();
 
-            // 3. Le actualizamos los campos (¡NUNCA se actualiza el ID!)
+            
             productoGuardado.setCodigo(productoNuevo.getCodigo());
             productoGuardado.setNombre(productoNuevo.getNombre());
             productoGuardado.setPrecio_base(productoNuevo.getPrecio_base());
             productoGuardado.setPeso_gramos(productoNuevo.getPeso_gramos());
             productoGuardado.setDimensiones(productoNuevo.getDimensiones());
 
-            // 4. Guardamos. Como el objeto ya tiene su ID original, Spring hace un UPDATE automático
             return productoRepository.save(productoGuardado);
         }
 
-        // Si mandan un ID que no existe, devolvemos null
         return null; 
     }
 
     public void eliminarProducto(Long id){
         productoRepository.deleteById(id);
+    }
+    
+    // conteo de productos dentro de una categoria
+    public List<Object[]> obtenerConteoCategorias() {
+
+        return categoriaRepository.conteoProductosPorCategoria();
     }
 }

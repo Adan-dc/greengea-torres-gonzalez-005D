@@ -1,10 +1,13 @@
 package com.greengea.carritodecompras.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,20 +21,16 @@ public class Carrito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private Long referenciaC; // ID del cliente
-    private Long referenciaId; // ID del producto o servicio
-    private String tipo; // "PRODUCTO" o "SERVICIO"
-    private int cantidad;
+    private String referenciaIdProducto;
+    @Min(value = 1, message = "La cantidad del producto a adquirir debe ser mínimo 1")
+    private Integer cantidad;
+    private Integer precioUnitario;
+    private Integer stock;
+    private Integer subtotalProducto;
     //Esto no se guarda en la base de datos
     @Transient
-    private Object datosItems;
-
-    @Transient
-    private Double precio;
-
-    @Transient
-    private Double total;
+    @JsonIgnore
+    private Integer subtotalTotal;
 
 }
 
