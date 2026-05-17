@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-05-2026 a las 03:52:47
+-- Tiempo de generación: 17-05-2026 a las 21:45:24
 -- Versión del servidor: 10.1.25-MariaDB
 -- Versión de PHP: 5.6.31
 
@@ -31,7 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `carrito` (
   `id` bigint(20) NOT NULL,
   `cantidad` int(11) DEFAULT NULL,
-  `precio_unitario` int(11) DEFAULT NULL,
+  `precio_base` int(11) DEFAULT NULL,
   `referencia_id_producto` varchar(255) DEFAULT NULL,
   `stock` int(11) DEFAULT NULL,
   `subtotal_producto` int(11) DEFAULT NULL
@@ -41,7 +41,7 @@ CREATE TABLE `carrito` (
 -- Volcado de datos para la tabla `carrito`
 --
 
-INSERT INTO `carrito` (`id`, `cantidad`, `precio_unitario`, `referencia_id_producto`, `stock`, `subtotal_producto`) VALUES
+INSERT INTO `carrito` (`id`, `cantidad`, `precio_base`, `referencia_id_producto`, `stock`, `subtotal_producto`) VALUES
 (1, 10, 16490, '1', 95, 164900),
 (2, 12, 26800, '2', 120, 321600),
 (3, 3, 21600, '3', 89, 64800);

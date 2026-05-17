@@ -24,7 +24,7 @@ public class Carrito {
     private String referenciaIdProducto;
     @Min(value = 1, message = "La cantidad del producto a adquirir debe ser mínimo 1")
     private Integer cantidad;
-    private Integer precioUnitario;
+    private Integer precio_base;
     private Integer stock;
     private Integer subtotalProducto;
     //Esto no se guarda en la base de datos

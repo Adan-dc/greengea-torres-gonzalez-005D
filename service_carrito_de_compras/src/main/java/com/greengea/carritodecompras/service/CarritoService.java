@@ -58,8 +58,8 @@ public class CarritoService
                     }
 
                 carrito.setStock(stock);
-                carrito.setPrecioUnitario(precioP);
-                int subtotal = carrito.getCantidad() * carrito.getPrecioUnitario();
+                carrito.setPrecio_base(precioP);
+                int subtotal = carrito.getCantidad() * carrito.getPrecio_base();
                 carrito.setSubtotalProducto(subtotal);
             }
 
@@ -85,7 +85,7 @@ public class CarritoService
             carritoGuardado.setReferenciaIdProducto(carritoNuevo.getReferenciaIdProducto());
             carritoGuardado.setCantidad(carritoNuevo.getCantidad());
 
-            int nuevoSubtotal = carritoGuardado.getCantidad() * carritoGuardado.getPrecioUnitario();
+            int nuevoSubtotal = carritoGuardado.getCantidad() * carritoGuardado.getPrecio_base();
             carritoGuardado.setSubtotalProducto(nuevoSubtotal);
             
             return carritoRepository.save(carritoGuardado);
