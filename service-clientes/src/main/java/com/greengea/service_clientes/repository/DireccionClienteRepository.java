@@ -8,6 +8,6 @@ import com.greengea.service_clientes.model.DireccionCliente;
 @Repository
 public interface DireccionClienteRepository extends JpaRepository<DireccionCliente, Long> {
 
-    DireccionCliente findByCliente(DireccionCliente Direccion);
+
 
 }

@@ -34,11 +34,11 @@ public class Producto
     @Min(value = 4990, message = "El precio del producto debe ser mínimo 4990 pesos")
     private int precio_base;
     @Max(value = 50, message = "El peso del pedido debe ser maximo de 50 kilos")
-    private float peso_gramos;
+    private float peso_kilos;
     @Max(value = 200, message = "El perimetro total del pedido debe ser maximo de 200 cm")
     private float dimensiones;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "categoria_id", unique = true)
+    @JoinColumn(name = "categoria_id")
     @JsonBackReference
     private Categoria categoria;
 }

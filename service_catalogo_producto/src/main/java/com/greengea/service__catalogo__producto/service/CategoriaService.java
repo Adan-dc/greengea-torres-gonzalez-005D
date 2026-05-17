@@ -73,7 +73,7 @@ public class CategoriaService
             productoGuardado.setCodigo(productoNuevo.getCodigo());
             productoGuardado.setNombre(productoNuevo.getNombre());
             productoGuardado.setPrecio_base(productoNuevo.getPrecio_base());
-            productoGuardado.setPeso_gramos(productoNuevo.getPeso_gramos());
+            productoGuardado.setPeso_kilos(productoNuevo.getPeso_kilos());
             productoGuardado.setDimensiones(productoNuevo.getDimensiones());
 
             return productoRepository.save(productoGuardado);

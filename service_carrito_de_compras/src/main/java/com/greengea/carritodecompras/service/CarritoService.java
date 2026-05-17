@@ -27,7 +27,7 @@ public class CarritoService
 
                  Map producto = webClientBuilder.build()
                     .get()
-                    .uri("http://localhost:8084/api/v1/stock/"
+                    .uri("http://localhost:8087/api/v1/stock/"
                             + carrito.getReferenciaIdProducto())
                     .retrieve()
                     .bodyToMono(Map.class)
@@ -35,7 +35,7 @@ public class CarritoService
 
                  Map precio = webClientBuilder.build()
                     .get()
-                    .uri("http://localhost:8082/api/v1/producto/"
+                    .uri("http://localhost:8085/api/v1/producto/"
                             + carrito.getReferenciaIdProducto())
                     .retrieve()
                     .bodyToMono(Map.class)
@@ -85,6 +85,9 @@ public class CarritoService
             carritoGuardado.setReferenciaIdProducto(carritoNuevo.getReferenciaIdProducto());
             carritoGuardado.setCantidad(carritoNuevo.getCantidad());
 
+            int nuevoSubtotal = carritoGuardado.getCantidad() * carritoGuardado.getPrecioUnitario();
+            carritoGuardado.setSubtotalProducto(nuevoSubtotal);
+            
             return carritoRepository.save(carritoGuardado);
         }
         return null; 

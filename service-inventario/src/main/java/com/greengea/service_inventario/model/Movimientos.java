@@ -1,10 +1,7 @@
 package com.greengea.service_inventario.model;
 
 import java.time.LocalDate;
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +9,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,25 +22,22 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(
-  generator = ObjectIdGenerators.PropertyGenerator.class, 
-  property = "id") // Esto le dice: "Si ya mostraste este ID, no te buclees"
 public class Movimientos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private boolean tipo;//entrada o salida
+    @NotNull(message = "El tipo no puede estar vacío, manda true o false")
+    private boolean tipo;//Compra o venta
+    @Min(value = 1, message = "La cantidad del movimiento debe ser mínimo 1")
     private int cantidad;
+    @NotBlank(message = "El motivo es obligatorio")
     private String motivo;
     private LocalDate fecha;
 
-    private Long productoId;
-
-    @ManyToOne//muchos a uno
-    @JoinColumn(name = "stock_id")
-    private Stock stock;//esto tecnicamente es lo que te muestra la otra tabla dentro de esta
-
-    
-    @Transient // No se guarda en la base de datos db_gestion
+    @Transient
+    @JsonIgnore
     private Object datosProducto; 
+    @ManyToOne
+    @JoinColumn(name = "stock_id")
+    private Stock stock;
 }
